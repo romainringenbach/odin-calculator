@@ -171,13 +171,17 @@ inputField.addEventListener("input", () => {
     }
 });
 
-inputField.addEventListener("keydown", function (event) {
-    if (event.key === "Enter") {
-        operate();
-    }
 
-    if (event.key === "Backspace") {
+const allowedKeys = ["0","1","2","3","4","5","6","7","8","9","+","-","x","/",".","=","Enter","Backspace"]
+inputField.addEventListener("keydown", function (event) {
+    if(allowedKeys.find((element) => element === event.key)){
+        if (event.key === "Enter") {
+            operate();
+        } else if (event.key === "Backspace") {
+            event.preventDefault();
+            removeLast();
+        }
+    } else {
         event.preventDefault();
-        removeLast();
     }
 });
