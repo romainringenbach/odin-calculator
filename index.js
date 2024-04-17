@@ -81,6 +81,16 @@ function operate(){
     currentInput +="="+lastResult;
 }
 
+function removeLast(){
+    let equalIndex = inputField.value.search(/=/);
+    if(equalIndex >= 0){
+        currentInputAsArray = currentInput.split('=');
+        currentInput = currentInputAsArray[0];
+    } else {
+        currentInput = currentInput.slice(0, -1);
+    }
+}
+
 buttons.forEach((button) => {
     button.addEventListener("click",(event) => {
         if(event.target.id){
@@ -89,7 +99,7 @@ buttons.forEach((button) => {
                     currentInput = "";
                     break;
                 case "erase-button":
-                    currentInput = currentInput.slice(0, -1); 
+                    removeLast();
                     break;
                 case "equal-button":
                     operate();
@@ -115,16 +125,22 @@ buttons.forEach((button) => {
 inputField.addEventListener("input", () => {
     currentInput = inputField.value;
     let equalIndex = inputField.value.search(/=/);
-    if(equalIndex >= 0){
+    if(equalIndex === (currentInput.length-1)){
         currentInput = currentInput.replace(/=/, '');
         operate()
         inputField.value = currentInput;
     }
 });
 
-inputField.addEventListener("keyup", function (event) {
-    if (event.key === "Enter" || event.keyCode === 13) {
+inputField.addEventListener("keydown", function (event) {
+    if (event.key === "Enter") {
         operate()
+        inputField.value = currentInput;
+    }
+
+    if (event.key === "Backspace") {
+        event.preventDefault();
+        removeLast();
         inputField.value = currentInput;
     }
 });
