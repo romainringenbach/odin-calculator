@@ -76,6 +76,11 @@ const inputField = document.querySelector("input");
 let currentInput = "";
 let lastResult = 0;
 
+function operate(){
+    lastResult = evaluate(currentInput);
+    currentInput +="="+lastResult;
+}
+
 buttons.forEach((button) => {
     button.addEventListener("click",(event) => {
         if(event.target.id){
@@ -87,8 +92,7 @@ buttons.forEach((button) => {
                     currentInput = currentInput.slice(0, -1); 
                     break;
                 case "equal-button":
-                    lastResult = evaluate(currentInput);
-                    currentInput +="="+lastResult;
+                    operate();
                     break;
             
                 default:
@@ -105,5 +109,22 @@ buttons.forEach((button) => {
             }
         }
         inputField.value = currentInput;
-    })
-})
+    });
+});
+
+inputField.addEventListener("input", () => {
+    currentInput = inputField.value;
+    let equalIndex = inputField.value.search(/=/);
+    if(equalIndex >= 0){
+        currentInput = currentInput.replace(/=/, '');
+        operate()
+        inputField.value = currentInput;
+    }
+});
+
+inputField.addEventListener("keyup", function (event) {
+    if (event.key === "Enter" || event.keyCode === 13) {
+        operate()
+        inputField.value = currentInput;
+    }
+});
