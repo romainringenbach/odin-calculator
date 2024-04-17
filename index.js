@@ -25,7 +25,7 @@ function evaluate(operation){
     let a = null;
     let b = null;
     let operator = null;
-    
+
     if(match){
         let operator = null;
         if(operation.search(/\+/) >= 0){
@@ -69,3 +69,33 @@ function evaluate(operation){
     }
     return result;
 }
+
+const buttons = document.querySelectorAll("button");
+const inputField = document.querySelector("input");
+
+let currentInput = "";
+
+buttons.forEach((button) => {
+    button.addEventListener("click",(event) => {
+        if(event.target.id){
+            switch (event.target.id) {
+                case "clear-button":
+                    currentInput = "";
+                    break;
+                case "erase-button":
+                    currentInput = currentInput.slice(0, -1); 
+                    break;
+                case "equal-button":
+                    currentInput +="="+evaluate(currentInput);
+                    break;
+            
+                default:
+                    console.warn("This button id is not recognized")
+                    break;
+            }
+        } else { // The user clicked on a number or an operator
+            currentInput+=event.target.textContent;
+        }
+        inputField.value = currentInput;
+    })
+})
