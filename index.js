@@ -101,9 +101,12 @@ function evaluate(operation){
 // The available actions
 
 function operate(){
-    lastResult = evaluate(currentInput);
-    currentInput +="="+lastResult;
-    inputField.value = currentInput;
+    let equalIndex = inputField.value.search(/=/);
+    if(equalIndex < 0){
+        lastResult = evaluate(currentInput);
+        currentInput +="="+lastResult;
+        inputField.value = currentInput;
+    }
 }
 
 function removeLast(){
