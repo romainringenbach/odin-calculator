@@ -23,6 +23,11 @@ input {
     text-align: right;
 }
 
+.bad-input {
+    background-color: lightcoral;
+    border-color: red;
+}
+
 .container {
     display: flex;
     flex-direction: column;

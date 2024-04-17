@@ -101,15 +101,19 @@ function evaluate(operation){
 // The available actions
 
 function operate(){
+    resetInputFeedback()
     let equalIndex = inputField.value.search(/=/);
     if(equalIndex < 0){
         lastResult = evaluate(currentInput);
         currentInput +="="+lastResult;
         inputField.value = currentInput;
+        if(lastResult === "ERR")
+            badInputLongFeedback();
     }
 }
 
 function removeLast(){
+    resetInputFeedback()
     let equalIndex = inputField.value.search(/=/);
     if(equalIndex >= 0){
         currentInputAsArray = currentInput.split('=');
@@ -121,17 +125,19 @@ function removeLast(){
 }
 
 function clear(){
+    resetInputFeedback()
     currentInput = "";
     inputField.value = currentInput;
 }
 
 function appendNumberOrOperator(value,isOperator){
+    resetInputFeedback()
     if((currentInput.search(/=/) >= 0 || currentInput==="") && isOperator){
         currentInput=""+lastResult+value;
     } else if(currentInput.search(/=/) >= 0) {
         currentInput=value;
     } else if(isOperator && getOperator(currentInput)){
-
+        badInputShortFeedback();
     } else {
         currentInput+=value;
     }
@@ -181,16 +187,16 @@ inputField.addEventListener("input", () => {
 });
 
 
-const allowedKeys = ["0","1","2","3","4","5","6","7","8","9","+","-","x","/",".","=","Enter","Backspace"]
+const allowedKeys = ["0","1","2","3","4","5","6","7","8","9","+","-","x","/",".","=","Enter","Backspace","Shift"]
+// When not having a digit keyboard, shift is sometime used with another key to get a digit.
 inputField.addEventListener("keydown", function (event) {
+    event.preventDefault();
     if(allowedKeys.find((element) => element === event.key)){
-        if (event.key === "Enter") {
+        if (event.key === "Enter" || event.key === "=") {
             operate();
         } else if (event.key === "Backspace") {
-            event.preventDefault();
             removeLast();
-        } else {
-            event.preventDefault();
+        } else if(event.key != "Shift") {
             appendNumberOrOperator(event.key,
                 event.key === "+" ||
                 event.key === "-" ||
@@ -199,6 +205,21 @@ inputField.addEventListener("keydown", function (event) {
             );
         }
     } else {
-        event.preventDefault();
+        badInputShortFeedback();
     }
 });
+
+// Visual feedback
+
+function badInputShortFeedback(){
+    inputField.classList.add("bad-input");
+    window.setTimeout(resetInputFeedback, 100);
+}
+
+function badInputLongFeedback(){
+    inputField.classList.add("bad-input");
+}
+
+function resetInputFeedback(){
+    inputField.classList.remove("bad-input");
+}
