@@ -1,3 +1,11 @@
+const buttons = document.querySelectorAll("button");
+const inputField = document.querySelector("input");
+
+let currentInput = "";
+let lastResult = 0;
+
+// The operator functions
+
 function add(a,b){
     return a+b;
 }
@@ -18,67 +26,81 @@ function divide(a,b){
     }
 }
 
-function evaluate(operation){
-    let match = operation.match(/^\s*[0-9]+[\.[0-9]*]?\s*[\+|\-|x|\/]\s*[0-9]+[\.[0-9]*]?\s*$/);
+// The evaluation functions
 
-    let result = "ERR";
-    let a = null;
-    let b = null;
+function isValid(operation){
+    let standartInputMatch = operation.match(/^\s*[0-9]+[\.[0-9]*]?\s*[\+|\-|x|\/]\s*[0-9]+[\.[0-9]*]?\s*$/);
+
+    return (standartInputMatch || leftValueStartWithPointMatch || rightValueStartWithPointMatch);
+}
+
+function getOperator(operation){
     let operator = null;
+    if(operation.search(/\+/) >= 0){
+        operator = "+";
+    }
+    if(operation.search(/\-/) >= 0){
+        operator = "-";
+    }
+    if(operation.search(/x/) >= 0){
+        operator = "x";
+    }
+    if(operation.search(/\//) >= 0){
+        operator = "/";
+    }
+    return operator;
+}
 
-    if(match){
-        let operator = null;
-        if(operation.search(/\+/) >= 0){
-            operator = "+";
-        }
-        if(operation.search(/\-/) >= 0){
-            operator = "-";
-        }
-        if(operation.search(/x/) >= 0){
-            operator = "x";
-        }
-        if(operation.search(/\//) >= 0){
-            operator = "/";
-        }
+function getNumbers(operation,operator){
+    operator = operator || getOperator(operation);
+    const numbers = operation.split(operator);
+    let a = numbers[0].trim();
+    let b = numbers[1].trim();
+    return {"left":+a,"right":+b};
+}
 
-        console.log(operator)
+function applyOperator(left,right,operator){
+    let result = "ERR";
+    switch (operator) {
+        case "+":
+            result = add(left,right);
+            break;
+        case "-":
+            result = subtract(left,right);
+            break;
+        case "x":
+            result = multiply(left,right);
+            break;
+        case "/":
+            result = divide(left,right);
+            break;
+    
+        default:
+            break;
+    }
+    return result;
+}
 
+function evaluate(operation){
+    let result = "ERR";
+    if(isValid(operation)){
+        let operator = getOperator(operation);
         if(operator){
-            const numbers = operation.split(operator);
-            a = numbers[0].trim();
-            b = numbers[1].trim();
-            
-            switch (operator) {
-                case "+":
-                    result = add(+a,+b);
-                    break;
-                case "-":
-                    result = subtract(+a,+b);
-                    break;
-                case "x":
-                    result = multiply(+a,+b);
-                    break;
-                case "/":
-                    result = divide(+a,+b);
-                    break;
-            
-                default:
-                    break;
+            let numbers = getNumbers(operation,operator);
+            if(numbers.left && numbers.right){
+                result = applyOperator(numbers.left,numbers.right,operator);
             }
         }
     }
     return result;
 }
 
-const buttons = document.querySelectorAll("button");
-const inputField = document.querySelector("input");
-
-let currentInput = "";
-let lastResult = 0;
+// The available actions
 
 function operate(){
     lastResult = evaluate(currentInput);
     currentInput +="="+lastResult;
+    inputField.value = currentInput;
 }
 
 function removeLast(){
@@ -89,37 +111,52 @@ function removeLast(){
     } else {
         currentInput = currentInput.slice(0, -1);
     }
+    inputField.value = currentInput;
 }
 
+function clear(){
+    currentInput = "";
+    inputField.value = currentInput;
+}
+
+// Handle click on a button
+
+function actionButtonOnClick(event){
+    switch (event.target.id) {
+        case "clear-button":
+            clear();
+            break;
+        case "erase-button":
+            removeLast();
+            break;
+        case "equal-button":
+            operate();
+            break;
+        default:
+            console.warn("This button id is not recognized");
+            break;
+    }
+}
+
+function numberOrOperatorButtonOnClick(event){
+    if((currentInput.search(/=/) >= 0 || currentInput==="") && event.target.className.search(/operator/) >= 0){
+        currentInput=""+lastResult+event.target.textContent;
+    } else if(currentInput.search(/=/) >= 0) {
+        currentInput=event.target.textContent;
+    } else {
+        currentInput+=event.target.textContent;
+    }
+    inputField.value = currentInput;
+}
+
+// Add event listeners
+
 buttons.forEach((button) => {
-    button.addEventListener("click",(event) => {
-        if(event.target.id){
-            switch (event.target.id) {
-                case "clear-button":
-                    currentInput = "";
-                    break;
-                case "erase-button":
-                    removeLast();
-                    break;
-                case "equal-button":
-                    operate();
-                    break;
-            
-                default:
-                    console.warn("This button id is not recognized")
-                    break;
-            }
-        } else { // The user clicked on a number or an operator
-            if((currentInput.search(/=/) >= 0 || currentInput==="") && event.target.className.search(/operator/) >= 0){
-                currentInput=""+lastResult+event.target.textContent;
-            } else if(currentInput.search(/=/) >= 0) {
-                currentInput=event.target.textContent;
-            } else {
-                currentInput+=event.target.textContent;
-            }
-        }
-        inputField.value = currentInput;
-    });
+    if(button.id){
+        button.addEventListener("click",actionButtonOnClick);
+    } else {
+        button.addEventListener("click",numberOrOperatorButtonOnClick);
+    }
 });
 
 inputField.addEventListener("input", () => {
@@ -127,20 +164,17 @@ inputField.addEventListener("input", () => {
     let equalIndex = inputField.value.search(/=/);
     if(equalIndex === (currentInput.length-1)){
         currentInput = currentInput.replace(/=/, '');
-        operate()
-        inputField.value = currentInput;
+        operate();
     }
 });
 
 inputField.addEventListener("keydown", function (event) {
     if (event.key === "Enter") {
-        operate()
-        inputField.value = currentInput;
+        operate();
     }
 
     if (event.key === "Backspace") {
         event.preventDefault();
         removeLast();
-        inputField.value = currentInput;
     }
 });
