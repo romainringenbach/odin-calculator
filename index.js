@@ -122,6 +122,17 @@ function clear(){
     inputField.value = currentInput;
 }
 
+function appendNumberOrOperator(value){
+    if((currentInput.search(/=/) >= 0 || currentInput==="") && event.target.className.search(/operator/) >= 0){
+        currentInput=""+lastResult+value;
+    } else if(currentInput.search(/=/) >= 0) {
+        currentInput=value;
+    } else {
+        currentInput+=value;
+    }
+    inputField.value = currentInput;
+}
+
 // Handle click on a button
 
 function actionButtonOnClick(event){
@@ -142,14 +153,7 @@ function actionButtonOnClick(event){
 }
 
 function numberOrOperatorButtonOnClick(event){
-    if((currentInput.search(/=/) >= 0 || currentInput==="") && event.target.className.search(/operator/) >= 0){
-        currentInput=""+lastResult+event.target.textContent;
-    } else if(currentInput.search(/=/) >= 0) {
-        currentInput=event.target.textContent;
-    } else {
-        currentInput+=event.target.textContent;
-    }
-    inputField.value = currentInput;
+    appendNumberOrOperator(event.target.textContent);
 }
 
 // Add event listeners
@@ -180,6 +184,9 @@ inputField.addEventListener("keydown", function (event) {
         } else if (event.key === "Backspace") {
             event.preventDefault();
             removeLast();
+        } else {
+            event.preventDefault();
+            appendNumberOrOperator(event.key);
         }
     } else {
         event.preventDefault();
