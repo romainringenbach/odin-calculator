@@ -74,6 +74,7 @@ const buttons = document.querySelectorAll("button");
 const inputField = document.querySelector("input");
 
 let currentInput = "";
+let lastResult = 0;
 
 buttons.forEach((button) => {
     button.addEventListener("click",(event) => {
@@ -86,7 +87,8 @@ buttons.forEach((button) => {
                     currentInput = currentInput.slice(0, -1); 
                     break;
                 case "equal-button":
-                    currentInput +="="+evaluate(currentInput);
+                    lastResult = evaluate(currentInput);
+                    currentInput +="="+lastResult;
                     break;
             
                 default:
@@ -94,7 +96,13 @@ buttons.forEach((button) => {
                     break;
             }
         } else { // The user clicked on a number or an operator
-            currentInput+=event.target.textContent;
+            if((currentInput.search(/=/) >= 0 || currentInput==="") && event.target.className.search(/operator/) >= 0){
+                currentInput=""+lastResult+event.target.textContent;
+            } else if(currentInput.search(/=/) >= 0) {
+                currentInput=event.target.textContent;
+            } else {
+                currentInput+=event.target.textContent;
+            }
         }
         inputField.value = currentInput;
     })
