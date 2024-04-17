@@ -90,7 +90,7 @@ function evaluate(operation){
         let operator = getOperator(operation);
         if(operator){
             let numbers = getNumbers(operation,operator);
-            if(numbers.left && numbers.right){
+            if(typeof numbers.left === "number" && typeof numbers.right === "number"){
                 result = applyOperator(numbers.left,numbers.right,operator);
             }
         }
