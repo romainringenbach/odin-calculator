@@ -122,11 +122,13 @@ function clear(){
     inputField.value = currentInput;
 }
 
-function appendNumberOrOperator(value){
-    if((currentInput.search(/=/) >= 0 || currentInput==="") && event.target.className.search(/operator/) >= 0){
+function appendNumberOrOperator(value,isOperator){
+    if((currentInput.search(/=/) >= 0 || currentInput==="") && isOperator){
         currentInput=""+lastResult+value;
     } else if(currentInput.search(/=/) >= 0) {
         currentInput=value;
+    } else if(isOperator && getOperator(currentInput)){
+
     } else {
         currentInput+=value;
     }
@@ -153,7 +155,7 @@ function actionButtonOnClick(event){
 }
 
 function numberOrOperatorButtonOnClick(event){
-    appendNumberOrOperator(event.target.textContent);
+    appendNumberOrOperator(event.target.textContent,event.target.className.search(/operator/) >= 0);
 }
 
 // Add event listeners
@@ -186,7 +188,12 @@ inputField.addEventListener("keydown", function (event) {
             removeLast();
         } else {
             event.preventDefault();
-            appendNumberOrOperator(event.key);
+            appendNumberOrOperator(event.key,
+                event.key === "+" ||
+                event.key === "-" ||
+                event.key === "x" ||
+                event.key === "/"
+            );
         }
     } else {
         event.preventDefault();
