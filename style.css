@@ -1,0 +1,71 @@
+@property --gap {
+    syntax: "<length>";
+    inherits: false;
+    initial-value: 20px;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: dimgray;
+}
+
+button, input {
+    font-size: xx-large;
+    font-weight: bold;
+    color: black;
+}
+
+input {
+    padding: 0px calc(90vh * 1/6*1/2);
+    text-align: right;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 90vh;
+    aspect-ratio: 4/6;
+    gap: var(--gap);
+}
+
+#operation-input {
+    flex: 1;
+}
+
+.container-grid {
+    flex: 5;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--gap);
+}
+
+.container-grid div {
+    height: calc((100% - 4*var(--gap)) / 5);
+    aspect-ratio: 1/1;
+    
+}
+
+.container-grid button {
+    height: 18%;
+    aspect-ratio: 1/1;
+}
+
+.rounded-rectangle {
+    border-radius: calc(90vh * 1/6*1/2);
+}
+
+.number-button {
+    background-color: darkgray;
+}
+
+.operator-button {
+    background-color: chocolate;
+}
+
+#equal-button {
+    background-color: gold;
+}

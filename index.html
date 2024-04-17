@@ -3,10 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="index.js"></script>
+    <script src="index.js" defer></script>
     <title>Odin - Calculator</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    
+    <div class="container">
+        <input id="operation-input" class="rounded-rectangle" type="text" placeholder="10 + 20 = 30">
+        <div  class="container-grid">
+            <button class="rounded-rectangle" id="clear">C</button>
+            <div></div>
+            <button class="rounded-rectangle" id="back">&#60;</button>
+            <button class="rounded-rectangle operator-button">+</button>
+            <button class="rounded-rectangle number-button">7</button>
+            <button class="rounded-rectangle number-button">8</button>
+            <button class="rounded-rectangle number-button">9</button>
+            <button class="rounded-rectangle operator-button">-</button>
+            <button class="rounded-rectangle number-button">4</button>
+            <button class="rounded-rectangle number-button">5</button>
+            <button class="rounded-rectangle number-button">6</button>
+            <button class="rounded-rectangle operator-button">x</button>
+            <button class="rounded-rectangle number-button">1</button>
+            <button class="rounded-rectangle number-button">2</button>
+            <button class="rounded-rectangle number-button">3</button>
+            <button class="rounded-rectangle operator-button">/</button>
+            <button class="rounded-rectangle number-button">0</button>
+            <div></div>
+            <button class="rounded-rectangle number-button">.</button>
+            <button class="rounded-rectangle" id="equal-button">=</button>
+        </div>
+
+    </div>
 </body>
 </html>
