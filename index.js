@@ -30,8 +30,11 @@ function divide(a,b){
 
 function isValid(operation){
     let standartInputMatch = operation.match(/^\s*[0-9]+[\.[0-9]*]?\s*[\+|\-|x|\/]\s*[0-9]+[\.[0-9]*]?\s*$/);
+    let leftValueStartWithPointMatch = operation.match(/^\s*\.[0-9]*\s*[\+|\-|x|\/]\s*[0-9]+[\.[0-9]*]?\s*$/);
+    let rightValueStartWithPointMatch = operation.match(/^\s*[0-9]+[\.[0-9]*]?\s*[\+|\-|x|\/]\s*\.[0-9]*\s*$/);
+    let bothValuesStartWithPointMatch = operation.match(/^\s*\.[0-9]*\s*[\+|\-|x|\/]\s*\.[0-9]*\s*$/);
 
-    return (standartInputMatch || leftValueStartWithPointMatch || rightValueStartWithPointMatch);
+    return (standartInputMatch || leftValueStartWithPointMatch || rightValueStartWithPointMatch || bothValuesStartWithPointMatch);
 }
 
 function getOperator(operation){
